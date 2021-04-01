@@ -1,34 +1,38 @@
 import PyPDF2
 
 
-def merge():
-    reader = PyPDF2.PdfFileReader(open("labels_example.pdf", 'rb'))
+def merge(pdf_file_path=None):
+    if not pdf_file_path:
+        pdf_file_path = 'labels_example.pdf'
+
+    with open(pdf_file_path, 'rb') as f:
+        reader = PyPDF2.PdfFileReader(f)
 
     NUM_OF_PAGES = reader.getNumPages()
 
-    page0 = reader.getPage(0)
-    h = page0.mediaBox.getHeight()
-    w = page0.mediaBox.getWidth()
-    print(h, w)
+    first_page = reader.getPage(0)
+    data_height = first_page.mediaBox.getHeight()
+    data_width = first_page.mediaBox.getWidth()
+    new_page_height = data_height * 3
+    print(data_height, data_width)
 
-    new_page_height = (h * NUM_OF_PAGES) // 2
+    new_pdf_page = PyPDF2.pdf.PageObject.createBlankPage(None, data_width * 2, new_page_height)
 
-    newpdf_page = PyPDF2.pdf.PageObject.createBlankPage(None, w * 2, new_page_height)
     ty = None
     for i in range(NUM_OF_PAGES):
         if i % 2 == 0:
-            ty = h * (i) // 2
+            ty = data_height * (i) // 2
         next_page = reader.getPage(i)
-        newpdf_page.mergeScaledTranslatedPage(
+        new_pdf_page.mergeScaledTranslatedPage(
             next_page,
             scale=1,
-            tx=(i % 2) * w,
+            tx=(i % 2) * data_width,
             ty=ty,
             expand=False
         )
 
     writer = PyPDF2.PdfFileWriter()
-    writer.addPage(newpdf_page)
+    writer.addPage(new_pdf_page)
 
     with open('output.pdf', 'wb') as f:
         writer.write(f)
