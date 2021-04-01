@@ -10,11 +10,14 @@ def merge():
     h = page0.mediaBox.getHeight()
     w = page0.mediaBox.getWidth()
     print(h, w)
-    newpdf_page = PyPDF2.pdf.PageObject.createBlankPage(None, w * 2, h * NUM_OF_PAGES)
-    ty = h * (NUM_OF_PAGES - 1) / 2
+
+    new_page_height = (h * NUM_OF_PAGES) // 2
+
+    newpdf_page = PyPDF2.pdf.PageObject.createBlankPage(None, w * 2, new_page_height)
+    ty = None
     for i in range(NUM_OF_PAGES):
         if i % 2 == 0:
-            ty = h * (NUM_OF_PAGES - i - 1) / 2
+            ty = h * (i) // 2
         next_page = reader.getPage(i)
         newpdf_page.mergeScaledTranslatedPage(
             next_page,
