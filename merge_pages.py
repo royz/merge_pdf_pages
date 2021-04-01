@@ -16,7 +16,7 @@ def merge(pdf_source=None, pdf_dest=None, page_limit=None):
     # set values for default args
     if not pdf_source:
         pdf_source = 'labels_example.pdf'
-    if not pdf_source:
+    if not pdf_dest:
         pdf_dest = pdf_source.replace('.pdf', '-merged.pdf')
 
     if not page_limit:
@@ -48,16 +48,18 @@ def merge(pdf_source=None, pdf_dest=None, page_limit=None):
     for _ in range(0, NUM_OF_PAGES, 6):
         new_pdf_page = PyPDF2.pdf.PageObject.createBlankPage(None, new_page_width, new_page_height)
 
-        ty = None
+        translate_y = None
         for i in range(6):
+            # update the translate y property for each 2 labels
             if i % 2 == 0:
-                ty = data_height * (i) / 2
-            next_page = reader.getPage(i)
+                translate_y = data_height * (i) / 2
+
+            # add the current label to the pdf page
             new_pdf_page.mergeScaledTranslatedPage(
-                next_page,
+                reader.getPage(i),
                 scale=1,
                 tx=(i % 2) * data_width,
-                ty=ty
+                ty=translate_y
             )
         # add this page to writer object
         pdf_writer.addPage(new_pdf_page)
