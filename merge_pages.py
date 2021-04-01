@@ -52,13 +52,14 @@ def merge(pdf_source=None, pdf_dest=None, page_limit=None):
         for i in range(6):
             # update the translate y property for each 2 labels
             if i % 2 == 0:
-                translate_y = data_height * (i) / 2
+                translate_y = data_height * i / 2
+            translate_x = ((i + 1) % 2) * data_width
 
             # add the current label to the pdf page
             new_pdf_page.mergeScaledTranslatedPage(
-                reader.getPage(i),
+                reader.getPage(NUM_OF_PAGES - i - 1),
                 scale=1,
-                tx=(i % 2) * data_width,
+                tx=translate_x,
                 ty=translate_y
             )
         # add this page to writer object
