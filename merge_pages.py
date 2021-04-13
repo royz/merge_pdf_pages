@@ -1,4 +1,8 @@
+import os
 import sys
+import glob
+from pprint import pprint
+
 import PyPDF2
 import shutil
 
@@ -17,7 +21,11 @@ def merge(pdf_source=None, pdf_dest=None, page_limit=None):
     if not pdf_source:
         pdf_source = 'labels_example.pdf'
     if not pdf_dest:
-        pdf_dest = pdf_source.replace('.pdf', '-merged.pdf')
+        dir_name, file_name = os.path.split(pdf_source)
+        pdf_dest = os.path.join(dir_name, 'merged_labels', file_name)
+        os.makedirs(os.path.join(dir_name, 'merged_labels'), exist_ok=True)
+        print(pdf_dest)
+        return
 
     if not page_limit:
         page_limit = sys.maxsize
@@ -71,4 +79,6 @@ def merge(pdf_source=None, pdf_dest=None, page_limit=None):
 
 
 if __name__ == '__main__':
-    merge()
+    files = glob.glob('./arco_labels/*')
+    for file in files:
+        merge(file)
