@@ -79,7 +79,7 @@ def merge(pdf_sources: [str] = None, pdf_dest=None, page_limit=None):
 
 
 def test():
-    merge(glob.glob('gls/*.pdf'), 'gls/dest.pdf')
+    merge(glob.glob('gls/*.pdf'), 'dest.pdf')
 
 
 if __name__ == '__main__':
